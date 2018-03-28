@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PostMarkInbound.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -10,21 +11,13 @@ namespace PostMarkInbound.Controllers
     {
         public ActionResult Index()
         {
-            return View();
-        }
+            List<PMInboundMessage> messages = null;
 
-        public ActionResult About()
-        {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
+            using (PostmarkContext ctxt = new PostmarkContext())
+            {
+                messages = ctxt.Messages.OrderByDescending(o => o.receivedAt).ToList();
+            }
+            return View(messages);
         }
     }
 }
